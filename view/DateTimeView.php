@@ -12,7 +12,7 @@ class DateTimeView {
 		$monthAndYear = date('F Y');
 		$timeHoursMinutesSeconds = date('H:i:s');
 
-		$timeString = "{$dayText}, The {$dayNumber} of {$monthAndYear}, The time is {$timeHoursMinutesSeconds}";
+		$timeString = "{$dayText}, the {$dayNumber} of {$monthAndYear}, The time is {$timeHoursMinutesSeconds}";
 
 		return "<p>{$timeString}</p>";
 	}
