@@ -27,6 +27,8 @@ class LoginView {
 				$message = "Username is missing";
 			} elseif (empty($_POST[self::$password])) {
 				$message = "Password is missing";
+			} elseif (empty($_POST[self::$name])) {
+				$message = "Username is missing";
 			}
 
 		}
