@@ -1,9 +1,10 @@
 <?php
 
+namespace View;
 
-class LayoutView {
+class Layout {
   
-  public function render($isLoggedIn, LoginView $v, DateTimeView $dtv) {
+  public function render($isLoggedIn, \View\Login $v, \View\DateTime $dtv) {
     echo '<!DOCTYPE html>
       <html>
         <head>
@@ -16,13 +17,14 @@ class LayoutView {
           
           <div class="container">
               ' . $v->response() . '
-              
+
               ' . $dtv->show() . '
           </div>
          </body>
       </html>
     ';
   }
+
   
   private function renderIsLoggedIn($isLoggedIn) {
     if ($isLoggedIn) {

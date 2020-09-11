@@ -1,6 +1,8 @@
 <?php
 
-class LoginView {
+namespace View;
+
+class Login {
 	private static $login = 'LoginView::Login';
 	private static $logout = 'LoginView::Logout';
 	private static $name = 'LoginView::UserName';
@@ -11,7 +13,6 @@ class LoginView {
 	private static $messageId = 'LoginView::Message';
 
 	
-
 	/**
 	 * Create HTTP response
 	 *
@@ -21,21 +22,32 @@ class LoginView {
 	 */
 	public function response() {
 		$message = '';
+		$pass = '';
 
-		if (isset($_POST[self::$login])) {
+		
+
+		if ($this->userWantsToLogin()) {
 			if (empty($_POST[self::$name]) and empty($_POST[self::$password])) {
 				$message = "Username is missing";
 			} elseif (empty($_POST[self::$password])) {
 				$message = "Password is missing";
 			} elseif (empty($_POST[self::$name])) {
 				$message = "Username is missing";
-			}
+			} else {
 
+				$pass = password_hash($_POST[self::$password], PASSWORD_DEFAULT);
+			}
 		}
+
+		var_dump($pass);
 		
 		$response = $this->generateLoginFormHTML($message);
 		//$response .= $this->generateLogoutButtonHTML($message);
 		return $response;
+	}
+
+	private function userWantsToLogin () : bool {
+		return isset($_POST[self::$login]);
 	}
 
 	/**
