@@ -10,7 +10,7 @@ require_once('Controller/Login.php');
 error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 
-//CREATE OBJECTS OF THE VIEWS
+//CREATE OBJECTS OF THE VIEWSs
 $v = new \View\Login();
 
 $lc = new \Controller\Login($v);
