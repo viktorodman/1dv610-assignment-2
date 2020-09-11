@@ -11,6 +11,10 @@ class Login {
 	private static $cookiePassword = 'LoginView::CookiePassword';
 	private static $keep = 'LoginView::KeepMeLoggedIn';
 	private static $messageId = 'LoginView::Message';
+	private static $errorMessageNoUsername = 'Username is missing';
+	private static $errorMessageNoPassword = 'Password is missing';
+
+	private $errorMessage = "";
 
 	
 	/**
@@ -21,34 +25,30 @@ class Login {
 	 * @return  void BUT writes to standard output and cookies!
 	 */
 	public function response() {
-		$message = '';
-		$pass = '';
-
-		
-
-		if ($this->userWantsToLogin()) {
-			if (empty($_POST[self::$name]) and empty($_POST[self::$password])) {
-				$message = "Username is missing";
-			} elseif (empty($_POST[self::$password])) {
-				$message = "Password is missing";
-			} elseif (empty($_POST[self::$name])) {
-				$message = "Username is missing";
-			} else {
-
-				$pass = password_hash($_POST[self::$password], PASSWORD_DEFAULT);
-			}
-		}
-
-		var_dump($pass);
-		
-		$response = $this->generateLoginFormHTML($message);
+		$response = $this->generateLoginFormHTML($this->errorMessage);
 		//$response .= $this->generateLogoutButtonHTML($message);
 		return $response;
 	}
 
-	private function userWantsToLogin () : bool {
+	public function userWantsToLogin () : bool {
 		return isset($_POST[self::$login]);
 	}
+
+	public function userEnteredAllFields() : bool {
+		return !empty($_POST[self::$name]) and !empty($_POST[self::$password]);
+	}
+
+	public function setErrorMessage() {
+		if (empty($_POST[self::$name]) and empty($_POST[self::$password])) {
+			$this->errorMessage = self::$errorMessageNoUsername;
+		} elseif (!empty($_POST[self::$name]) and empty($_POST[self::$password])) {
+			$this->errorMessage = self::$errorMessageNoPassword;
+		} elseif (empty($_POST[self::$name]) and !empty($_POST[self::$password])) {
+			$this->errorMessage = self::$errorMessageNoUsername;
+		}
+	}
+
+	
 
 	/**
 	* Generate HTML code on the output buffer for the logout button

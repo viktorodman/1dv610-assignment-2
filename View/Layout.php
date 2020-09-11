@@ -3,6 +3,7 @@
 namespace View;
 
 class Layout {
+
   
   public function render($isLoggedIn, \View\Login $v, \View\DateTime $dtv) {
     echo '<!DOCTYPE html>
