@@ -1,6 +1,6 @@
 <?php
 
-namespace Layout;
+namespace Controller;
 
 class Layout {
 
@@ -11,7 +11,9 @@ class Layout {
     }
 
     public function doLayout() {
-        
+        if($this->layoutView->shouldShowRegisterForm()) {
+            $this->layoutView->showRegisterForm();
+        }
     }
 
 }
