@@ -19,7 +19,7 @@ class Layout {
 
 
     if ($this->shouldDisplayRegisterForm) {
-        $correctForm = $regv->generateRegisterFormHTML();
+        $correctForm = $regv->response();
         $url = 'register';
     } else {
       $this->linkText = self::$registerText;

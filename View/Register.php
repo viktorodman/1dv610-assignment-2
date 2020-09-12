@@ -16,14 +16,17 @@ class Register {
 
 
     
+    public function response() {
+        return $this->generateRegisterFormHTML($this->errorMessage);
+    }
 
-    public function generateRegisterFormHTML() {
+    private function generateRegisterFormHTML($message) {
         return '
         <h2>Register new user</h2>
         <form action="?' . self::$registerURLID .'" method="post" enctype="multipart/form-data">
             <fieldset>
             <legend>Register a new user - Write username and password</legend>
-                <p id="'. self::$messageID .'">'. $this->errorMessage .'</p>
+                <p id="'. self::$messageID .'">' . $message . '</p>
                 <label for="'. self::$name .'" >Username :</label>
                 <input type="text" size="20" name="'. self::$name .'" id="'. self::$name .'" value="" />
                 <br/>
@@ -41,7 +44,7 @@ class Register {
 
     public function showErrorMessage() {
         if (empty($_POST[self::$name]) and empty($_POST[self::$password]) and empty($_POST[self::$passwordRepeat])) {
-            $this->errorMessage = self::$usernameToShortMessage . ' ' . self::$passwordToShortMessage;
+            $this->errorMessage = self::$usernameToShortMessage . '<br>' . self::$passwordToShortMessage;
         }
     }
 
