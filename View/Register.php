@@ -45,6 +45,8 @@ class Register {
     public function showErrorMessage() {
         if (empty($_POST[self::$name]) and empty($_POST[self::$password]) and empty($_POST[self::$passwordRepeat])) {
             $this->errorMessage = self::$usernameToShortMessage . '<br>' . self::$passwordToShortMessage;
+        } elseif (!empty($_POST[self::$name]) and empty($_POST[self::$password])) {
+            $this->errorMessage = self::$passwordToShortMessage;
         }
     }
 
