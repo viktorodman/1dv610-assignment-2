@@ -23,7 +23,7 @@ class Register {
         <form action="?' . self::$registerURLID .'" method="post" enctype="multipart/form-data">
             <fieldset>
             <legend>Register a new user - Write username and password</legend>
-                <p id="'. self::$messageID .'"> '. $this->errorMessage .'</p>
+                <p id="'. self::$messageID .'">'. $this->errorMessage .'</p>
                 <label for="'. self::$name .'" >Username :</label>
                 <input type="text" size="20" name="'. self::$name .'" id="'. self::$name .'" value="" />
                 <br/>
