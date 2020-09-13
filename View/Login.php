@@ -2,9 +2,11 @@
 
 namespace View;
 
-require_once('Model/Username.php');
-require_once('Model/Password.php');
-require_once('Model/Credentials.php');
+
+
+require_once(__DIR__ . '/../Model/Username.php');
+require_once(__DIR__ . '/../Model/Password.php');
+require_once(__DIR__ . '/../Model/Credentials.php');
 
 class Login {
 	private static $login = 'LoginView::Login';
