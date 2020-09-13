@@ -2,6 +2,10 @@
 
 namespace View;
 
+require_once('Model/Username.php');
+require_once('Model/Password.php');
+require_once('Model/Credentials.php');
+
 class Login {
 	private static $login = 'LoginView::Login';
 	private static $logout = 'LoginView::Logout';
@@ -34,19 +38,32 @@ class Login {
 		return isset($_POST[self::$login]);
 	}
 
-	public function userEnteredAllFields() : bool {
-		return !empty($_POST[self::$name]) and !empty($_POST[self::$password]);
+	public function getCredentials() : \Model\Credentials {
+		return new \Model\Credentials($this->getUsername(), $this->getPassword());
 	}
 
-	public function setErrorMessage() {
-		if (empty($_POST[self::$name]) and empty($_POST[self::$password])) {
-			$this->errorMessage = self::$errorMessageNoUsername;
-		} elseif (!empty($_POST[self::$name]) and empty($_POST[self::$password])) {
-			$this->errorMessage = self::$errorMessageNoPassword;
-		} elseif (empty($_POST[self::$name]) and !empty($_POST[self::$password])) {
-			$this->errorMessage = self::$errorMessageNoUsername;
-		}
+
+	public function showErrorMessage(string $errorMessage) {
+		$this->errorMessage = $errorMessage;
 	}
+
+	private function getUsername() : \Model\Username {
+		if (empty($_POST[self::$name])) {
+            throw new \Exception(self::$errorMessageNoUsername);
+		}
+		
+		return new \Model\Username(self::$name);
+	}
+
+	private function getPassword() : string {
+		if (empty($_POST[self::$password])) {
+            throw new \Exception(self::$errorMessageNoPassword);
+        }
+
+		return new \Model\Password($_POST[self::$password]);
+	}
+
+
 
 	
 

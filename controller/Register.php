@@ -12,12 +12,18 @@ class Register {
 
     public function doRegister() {
         if ($this->registerView->userWantsToRegister()) {
-            // Try to register a user
-            if ($this->registerView->checkAllFieldsFilled()) {
-                
+            try {
+                $userCredentials = $this->registerView->getRegisterCredentials();
+            } catch (\Throwable $error) {
+                $this->registerView->showErrorMessage($error->getMessage());
+            }
+
+
+           /*  if ($this->registerView->checkAllFieldsFilled()) {
+                // Try to register a user
             } else {
                 $this->registerView->showErrorMessage();
-            }
+            } */
             
         }
         

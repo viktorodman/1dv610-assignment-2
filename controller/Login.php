@@ -2,6 +2,7 @@
 
 namespace Controller;
 
+
 class Login {
 
     private $loginView;
@@ -12,12 +13,13 @@ class Login {
 
     public function doLogin() {
         if ($this->loginView->userWantsToLogin()) {
-            if ($this->loginView->userEnteredAllFields()) {
-                // Try to login user with credentials
-            } else {
-                // Set error message in view
-                $this->loginView->setErrorMessage();
+            try {
+                // Get Credentials
+                $userCredentials = $this->loginView->getCredentials();
+            } catch (\Throwable $error) {
+                $this->loginView->showErrorMessage($error->getMessage());
             }
+            
         }
     }
 
