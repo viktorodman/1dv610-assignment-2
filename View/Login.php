@@ -56,7 +56,7 @@ class Login {
 		return new \Model\Username(self::$name);
 	}
 
-	private function getPassword() : string {
+	private function getPassword() : \Model\Password {
 		if (empty($_POST[self::$password])) {
             throw new \Exception(self::$errorMessageNoPassword);
         }
