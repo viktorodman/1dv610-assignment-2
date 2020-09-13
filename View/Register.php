@@ -2,9 +2,9 @@
 
 namespace View;
 
-require_once('Model/Username.php');
-require_once('Model/Password.php');
-require_once('Model/Credentials.php');
+require_once('model/Username.php');
+require_once('model/Password.php');
+require_once('model/Credentials.php');
 
 class Register {
     private static $registerURLID = 'register';
