@@ -7,7 +7,7 @@ class Username {
     private $username;
 
     public function __construct(string $username) {
-        if (mb_strlen($username) < 3) {
+        if (strlen($username) < 3) {
             throw new \Exception(self::$usernameToShortMessage);
         }
         $this->username = $username;

@@ -30,7 +30,7 @@ class Register {
     }
 
     public function getRegisterCredentials() {
-        if(mb_strlen($_POST[self::$name]) < 3 and mb_strlen($_POST[self::$password]) < 6) {
+        if(strlen($_POST[self::$name]) < 3 and strlen($_POST[self::$password]) < 6) {
             throw new \Exception(self::$usernameToShortMessage . '<br>' . self::$passwordToShortMessage);
         }
 

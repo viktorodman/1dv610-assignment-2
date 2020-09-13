@@ -7,7 +7,7 @@ class Password {
     private $password;
 
     public function __construct(string $password) {
-        if (mb_strlen($password) < 6) {
+        if (strlen($password) < 6) {
             throw new \Exception(self::$passwordToShortMessage);
         }
         $this->password = $password;
