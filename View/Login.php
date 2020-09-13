@@ -2,9 +2,9 @@
 
 namespace View;
 
+var_dump($_SERVER["DOCUMENT_ROOT"] . "/Model/Username.php");
 
-
-require_once(__DIR__ . '/../Model/Username.php');
+require_once($_SERVER["DOCUMENT_ROOT"] . "/Model/Username.php");
 require_once(__DIR__ . '/../Model/Password.php');
 require_once(__DIR__ . '/../Model/Credentials.php');
 
