@@ -53,7 +53,7 @@ class Login {
             throw new \Exception(self::$errorMessageNoUsername);
 		}
 		
-		return new \Model\Username(self::$name);
+		return new \Model\Username($_POST[self::$name]);
 	}
 
 	private function getPassword() : \Model\Password {

@@ -8,9 +8,16 @@ require_once('View/Register.php');
 require_once('controller/Login.php');
 require_once('controller/Layout.php');
 require_once('controller/Register.php');
+
+require_once('model/DAL/UserDatabase.php');
 //MAKE SURE ERRORS ARE SHOWN... MIGHT WANT TO TURN THIS OFF ON A PUBLIC SERVER
 error_reporting(E_ALL);
 ini_set('display_errors', 'On');
+
+
+$u = new \Model\DAL\UserDatabase();
+
+
 
 //CREATE OBJECTS OF THE VIEWSs
 $layoutView = new \View\Layout();

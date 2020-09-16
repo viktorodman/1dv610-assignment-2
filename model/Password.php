@@ -12,4 +12,8 @@ class Password {
         }
         $this->password = $password;
     }
+
+    public function getPassword() : string {
+        return $this->password;
+    }
 }

@@ -4,15 +4,31 @@ namespace Model;
 
 class User {
 
-    private $userName;
-    private $password;
+    private static $username = "Admin";
+    private static $password = "Password";
+    private static $errorMessage = "Wrong name or password";
 
-    public function __construct(\Model\UserName $username, \Model\Password $password) {
-        $this->userName = $userName;
-        $this->password = $password;
+   
+    // Will later return a User
+    public static function authenticateUser(\Model\Credentials $userCredentials) {
+        if (User::userExists($userCredentials->getUsername())) {
+            if ($userCredentials->getPassword() == self::$password) {
+                return self::$username;
+            } else {
+                throw new \Exception(self::$errorMessage);
+            }
+        } else {
+            throw new \Exception(self::$errorMessage);
+        }
+
     }
 
-    public function registerUser() {
-        //Todo add code to register a new user
+    // This function will return a User
+    private static function userExists(string $username) : bool {
+        // TEMP CODE | Will call DB and check for user
+        return $username == self::$username;
     }
+
+
+
 }

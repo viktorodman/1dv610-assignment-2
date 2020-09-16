@@ -2,6 +2,7 @@
 
 namespace Controller;
 
+require_once('model/User.php');
 
 class Login {
 
@@ -16,6 +17,8 @@ class Login {
             try {
                 // Get Credentials
                 $userCredentials = $this->loginView->getCredentials();
+                // TEMP now returs a string but should return a user
+                $user = \Model\User::authenticateUser($userCredentials);
             } catch (\Throwable $error) {
                 $this->loginView->showErrorMessage($error->getMessage());
             }

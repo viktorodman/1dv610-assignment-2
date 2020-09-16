@@ -17,14 +17,6 @@ class Register {
             } catch (\Throwable $error) {
                 $this->registerView->showErrorMessage($error->getMessage());
             }
-
-
-           /*  if ($this->registerView->checkAllFieldsFilled()) {
-                // Try to register a user
-            } else {
-                $this->registerView->showErrorMessage();
-            } */
-            
         }
         
     }
