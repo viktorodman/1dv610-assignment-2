@@ -17,11 +17,15 @@ class Register {
     private static $usernameToShortMessage = 'Username has too few characters, at least 3 characters.';
     private static $passwordDoesNotMatch = 'Passwords do not match.';
     private $errorMessage = "";
+
+    private $remeberedUsername = "";
     
 
-
-    
     public function response() {
+        if (isset($_POST[self::$name])) {
+			$this->remeberedUsername = $_POST[self::$name];
+		}
+        
         return $this->generateRegisterFormHTML($this->errorMessage);
     }
 
@@ -67,7 +71,7 @@ class Register {
             <legend>Register a new user - Write username and password</legend>
                 <p id="'. self::$messageID .'">' . $message . '</p>
                 <label for="'. self::$name .'" >Username :</label>
-                <input type="text" size="20" name="'. self::$name .'" id="'. self::$name .'" value="" />
+                <input type="text" size="20" name="'. self::$name .'" id="'. self::$name .'" value="'. $this->remeberedUsername .'" />
                 <br/>
                 <label for="'. self::$password .'" >Password  :</label>
                 <input type="password" size="20" name="'. self::$password .'" id="'. self::$password .'" value="" />
@@ -80,24 +84,4 @@ class Register {
             </fieldset>
         </form>';
     }
-
-    /* public function showErrorMessage() {
-        if (empty($_POST[self::$name]) and empty($_POST[self::$password]) and empty($_POST[self::$passwordRepeat])) {
-            $this->errorMessage = self::$usernameToShortMessage . '<br>' . self::$passwordToShortMessage;
-        } elseif (!empty($_POST[self::$name]) and empty($_POST[self::$password])) {
-            $this->errorMessage = self::$passwordToShortMessage;
-        }
-    } */
-
-    
-
-   /*  public function getUsername() : \Model\Username {
-        if (empty($_POST[self::$name])) {
-            
-        }
-    } */
-
-    /* public function checkAllFieldsFilled() : bool {
-        return !empty($_POST[self::$name]) and !empty($_POST[self::$password]) and !empty($_POST[self::$passwordRepeat]);
-    } */
 }
