@@ -43,13 +43,13 @@ class Register {
 	}
 
     private function getUsername() : \Model\Username {
-        if (mb_strlen($_POST[self::$name]) < 3) {
+        if (strlen($_POST[self::$name]) < 3) {
             throw new \Exception(self::$usernameToShortMessage);
         }
         return new \Model\Username($_POST[self::$name]);
     }
     private function getPassword() : \Model\Password {
-        if (mb_strlen($_POST[self::$password]) < 6) {
+        if (strlen($_POST[self::$password]) < 6) {
             throw new \Exception(self::$passwordToShortMessage);
         }
         if ($_POST[self::$password] !== $_POST[self::$passwordRepeat]) {
