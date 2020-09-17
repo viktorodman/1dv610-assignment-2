@@ -16,10 +16,12 @@ class Login {
 	private static $cookiePassword = 'LoginView::CookiePassword';
 	private static $keep = 'LoginView::KeepMeLoggedIn';
 	private static $messageId = 'LoginView::Message';
+	private static $usernameField = 'LoginView::LoginField';
 	private static $errorMessageNoUsername = 'Username is missing';
 	private static $errorMessageNoPassword = 'Password is missing';
 
 	private $errorMessage = "";
+	private $remeberedUsername = "";
 
 	
 	/**
@@ -30,7 +32,12 @@ class Login {
 	 * @return  void BUT writes to standard output and cookies!
 	 */
 	public function response() {
+
+		if (isset($_POST[self::$name])) {
+			$this->remeberedUsername = $_POST[self::$name];
+		}
 		$response = $this->generateLoginFormHTML($this->errorMessage);
+
 		//$response .= $this->generateLogoutButtonHTML($message);
 		return $response;
 	}
@@ -40,6 +47,9 @@ class Login {
 	}
 
 	public function getCredentials() : \Model\Credentials {
+		if (empty($_POST[self::$name]) && empty($_POST[self::$password])) {
+			throw new \Exception(self::$errorMessageNoUsername);
+		}
 		return new \Model\Credentials($this->getUsername(), $this->getPassword());
 	}
 
@@ -95,7 +105,7 @@ class Login {
 					<p id="' . self::$messageId . '">' . $message . '</p>
 					
 					<label for="' . self::$name . '">Username :</label>
-					<input type="text" id="' . self::$name . '" name="' . self::$name . '" value="" />
+					<input type="text" id="' . self::$name . '" name="' . self::$name . '" value="'. $this->remeberedUsername .'" />
 
 					<label for="' . self::$password . '">Password :</label>
 					<input type="password" id="' . self::$password . '" name="' . self::$password . '" />

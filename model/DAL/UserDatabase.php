@@ -11,6 +11,7 @@ class UserDatabase {
     public function connect() {
          $url = getenv('JAWSDB_URL');
          $dbparts = parse_url($url);
+         
 
          $hostname = $dbparts['host'];
          $username = $dbparts['user'];
@@ -51,8 +52,10 @@ class UserDatabase {
             if ($this->passwordIsCorrect($username, $password)) {
                 echo "TJOHO";
             } else {
-                echo "attans";
+                throw new \Exception("Wrong name or password");
             }
+        } else {
+            throw new \Exception("Wrong name or password");
         }
     }
 

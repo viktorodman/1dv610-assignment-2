@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 //INCLUDE THE FILES NEEDED...
 require_once('View/Login.php');
 require_once('View/DateTime.php');
