@@ -8,6 +8,15 @@ class User {
     private static $password = "Password";
     private static $errorMessage = "Wrong name or password";
 
+    private $userCredentials;
+
+    public function __construct(\Model\Credentials $userCredentials) {
+        $this->userCredentials = $userCredentials;
+    }
+
+    public function getCredentials() : \Model\Credentials {
+        return $this->userCredentials;
+    }
    
     // Will later return a User
     public static function authenticateUser(\Model\Credentials $userCredentials) {
@@ -22,6 +31,7 @@ class User {
         }
 
     }
+
 
     // This function will return a User
     private static function userExists(string $username) : bool {

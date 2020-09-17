@@ -15,9 +15,9 @@ error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 
 
-$u = new \Model\DAL\UserDatabase();
+$db = new \Model\DAL\UserDatabase();
 
-
+$db->connect();
 
 //CREATE OBJECTS OF THE VIEWSs
 $layoutView = new \View\Layout();
@@ -25,8 +25,8 @@ $loginView = new \View\Login();
 $dateTimeView = new \View\DateTime();
 $registerView = new \View\Register();
 
-$registerController = new \Controller\Register($registerView);
-$loginController = new \Controller\Login($loginView);
+$registerController = new \Controller\Register($registerView, $db);
+$loginController = new \Controller\Login($loginView, $db);
 $layoutController = new \Controller\Layout($layoutView);
 
 $registerController->doRegister();

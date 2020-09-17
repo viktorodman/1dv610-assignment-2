@@ -10,10 +10,13 @@ class Password {
         if (strlen($password) < 6) {
             throw new \Exception(self::$passwordToShortMessage);
         }
+
         $this->password = $password;
     }
 
     public function getPassword() : string {
         return $this->password;
     }
+
+    
 }
