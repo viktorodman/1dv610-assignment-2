@@ -39,7 +39,7 @@ class UserDatabase {
         } else {
             echo "Adding User";
             $hash = $this->hashPassword($password);
-            $query = "INSERT INTO " . self::$tableName . " (username, password) VALUES ('". $username ."', '". $password ."')";
+            $query = "INSERT INTO " . self::$tableName . " (username, password) VALUES ('". $username ."', '". $hash ."')";
             $this->connection->query($query);
         }
     }
