@@ -12,7 +12,7 @@ class Register {
 	private static $password = 'RegisterView::Password';
 	private static $passwordRepeat = 'RegisterView::PasswordRepeat';
     private static $name = 'RegisterView::UserName';
-    private static $register = 'Register';
+    private static $register = 'RegisterView::Register';
     private static $passwordToShortMessage = 'Password has too few characters, at least 6 characters.';
     private static $usernameToShortMessage = 'Username has too few characters, at least 3 characters.';
     private static $passwordDoesNotMatch = 'Passwords do not match.';
