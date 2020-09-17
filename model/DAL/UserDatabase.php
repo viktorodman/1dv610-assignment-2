@@ -36,7 +36,7 @@ class UserDatabase {
         $password = $user->getCredentials()->getPassword();
 
         if($this->userExists($username)) {
-            echo "User exists";
+            
         } else {
             $hash = $this->hashPassword($password);
             $query = "INSERT INTO " . self::$tableName . " (username, password) VALUES ('". $username ."', '". $hash ."')";
@@ -50,7 +50,7 @@ class UserDatabase {
 
         if ($this->userExists($username)) {
             if ($this->passwordIsCorrect($username, $password)) {
-                echo "TJOHO";
+
             } else {
                 throw new \Exception("Wrong name or password");
             }
