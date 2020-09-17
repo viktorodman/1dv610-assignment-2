@@ -12,7 +12,7 @@ class Register {
 	private static $password = 'RegisterView::Password';
 	private static $passwordRepeat = 'RegisterView::PasswordRepeat';
     private static $name = 'RegisterView::UserName';
-    private static $register = 'DoRegistration';
+    private static $register = 'Register';
     private static $passwordToShortMessage = 'Password has too few characters, at least 6 characters.';
     private static $usernameToShortMessage = 'Username has too few characters, at least 3 characters.';
     private static $passwordDoesNotMatch = 'Passwords do not match.';
@@ -75,7 +75,7 @@ class Register {
                 <label for="'. self::$passwordRepeat .'" >Repeat password  :</label>
                 <input type="password" size="20" name="'. self::$passwordRepeat .'" id="'. self::$passwordRepeat .'" value="" />
                 <br/>
-                <input id="submit" type="submit" name="'. self::$register .'"  value="register" />
+                <input id="submit" type="submit" name="'. self::$register .'"  value="Register" />
                 <br/>
             </fieldset>
         </form>';

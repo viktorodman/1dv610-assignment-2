@@ -10,7 +10,8 @@ class UserDatabase {
 
     public function connect() {
          $url = getenv('JAWSDB_URL');
-         $dbparts = parse_url($url);
+         $dbparts = parse_url('mysql://ixavrix3gio6jl5f:z75luasj7mzd292h@ivgz2rnl5rh7sphb.chr7pe7iynqr.eu-west-1.rds.amazonaws.com:3306/ac8nmmi2pou3zv9l');
+         /* $dbparts = parse_url($url); */
          
 
          $hostname = $dbparts['host'];
@@ -37,7 +38,6 @@ class UserDatabase {
         if($this->userExists($username)) {
             echo "User exists";
         } else {
-            echo "Adding User";
             $hash = $this->hashPassword($password);
             $query = "INSERT INTO " . self::$tableName . " (username, password) VALUES ('". $username ."', '". $hash ."')";
             $this->connection->query($query);
