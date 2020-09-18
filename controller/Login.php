@@ -4,6 +4,7 @@ namespace Controller;
 
 require_once('model/User.php');
 
+
 class Login {
 
     private $loginView;
@@ -18,13 +19,14 @@ class Login {
         if ($this->loginView->userWantsToLogin()) {
             try {
                 // Get Credentials
-                $userCredentials = $this->loginView->getCredentials();
+
+                $userCredentials = $this->loginView->getRequestUserCredentials();
 
                 $user = new \Model\User($userCredentials);
                 // TEMP now returs a string but should return a user
                 $this->userDatabase->loginUser($user);
             } catch (\Throwable $error) {
-                $this->loginView->showErrorMessage($error->getMessage());
+                $this->loginView->reloadPageAndShowErrorMessage($error->getMessage());
             }
             
         }

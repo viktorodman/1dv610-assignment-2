@@ -42,3 +42,5 @@ $layoutController->doLayout();
 
 $layoutView->render(false, $loginView, $dateTimeView, $registerView);
 
+
+
