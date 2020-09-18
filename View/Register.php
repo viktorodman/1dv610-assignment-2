@@ -24,9 +24,7 @@ class Register {
     public function response() {
         if (isset($_POST[self::$name])) {
 			$this->remeberedUsername = $_POST[self::$name];
-        }
-        
-        var_dump($this->remeberedUsername);
+		}
         
         return $this->generateRegisterFormHTML($this->errorMessage);
     }
