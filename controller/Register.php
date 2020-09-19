@@ -19,11 +19,11 @@ class Register {
             try {
                 $userCredentials = $this->registerView->getRegisterCredentials();
                 $user = new \Model\User($userCredentials);
-                $this->userDatabase->addUser($user);
+                $this->userDatabase->registerUser($user);
                 header('Location: index.php?');
                 //  Try to register user on database
             } catch (\Throwable $error) {
-                $this->registerView->showErrorMessage($error->getMessage());
+                $this->registerView->reloadPageAndShowErrorMessage($error->getMessage());
             }
         }
         

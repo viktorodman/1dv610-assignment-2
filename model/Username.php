@@ -10,6 +10,9 @@ class Username {
         if (strlen($username) < 3) {
             throw new \Exception(self::$usernameToShortMessage);
         }
+        if (!preg_match('/^[a-zA-Z0-9]+$/', $username)) {
+            throw new \Exception("Username contains invalid characters.");
+        }
         $this->username = $username;
     }
 

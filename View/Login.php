@@ -18,7 +18,6 @@ class Login {
 	private static $usernameField = 'LoginView::LoginField';
 	private static $errorMessageNoUsername = 'Username is missing';
 	private static $errorMessageNoPassword = 'Password is missing';
-	private static $userSession = 'user';
 	private static $errorMessageSessionIndex = "LoginView::errorMessageSessionIndex";
 	private static $rememberedUserSessionIndex = "LoginView::rememberedUserSessionIndex";
 	
@@ -35,10 +34,10 @@ class Login {
 	 * @return  void BUT writes to standard output and cookies!
 	 */
 	public function response() {
-		$remeberedUsername = $this->getRememberedUsername();
-		$message = $this->getErrorMessage();
+		$remeberedUsername = $this->getRememberedSessionVariable($this->usernameWasSetAndShouldNotBeRemovedDuringThisRequest, self::$rememberedUserSessionIndex);
+		$message = $this->getRememberedSessionVariable($this->errorMessageWasSetAndShouldNotBeRemovedDuringThisRequest, self::$errorMessageSessionIndex);
+		
 		$response = $this->generateLoginFormHTML($message, $remeberedUsername);
-
 		//$response .= $this->generateLogoutButtonHTML($message);
 		return $response;
 	}
@@ -105,14 +104,14 @@ class Login {
 		';
 	}
 
-	private function getRememberedUsername() {
-		if ($this->usernameWasSetAndShouldNotBeRemovedDuringThisRequest) {
-            return $_SESSION[self::$rememberedUserSessionIndex];
+	private function getRememberedSessionVariable(bool $variableWasSet, string $variableSessionIndex) {
+		if ($variableWasSet) {
+            return $_SESSION[$variableSessionIndex];
         }
 
-        if(isset($_SESSION[self::$rememberedUserSessionIndex])) {
-            $message = $_SESSION[self::$rememberedUserSessionIndex];
-            unset($_SESSION[self::$rememberedUserSessionIndex]);
+        if(isset($_SESSION[$variableSessionIndex])) {
+            $message = $_SESSION[$variableSessionIndex];
+            unset($_SESSION[$variableSessionIndex]);
             return $message;
         }
         return "";

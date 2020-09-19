@@ -29,13 +29,14 @@ class UserDatabase {
          $this->createUserTableIfNeeded();
     }
 
-    public function addUser(\Model\User $user) { 
+    public function registerUser(\Model\User $user) { 
         $this->createUserTableIfNeeded();
         // Check if user already exists
         $username = $user->getCredentials()->getUsername();
         $password = $user->getCredentials()->getPassword();
 
         if($this->userExists($username)) {
+            throw new \Exception("User exists, pick another username.");
             
         } else {
             $hash = $this->hashPassword($password);
