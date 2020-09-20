@@ -15,6 +15,12 @@ class Login {
         $this->userDatabase = $userDB;
     }
 
+    public function doLogout() {
+        if ($this->loginView->userWantsToLogout()) {
+            $this->loginView->reloadPageAndLogout();
+        }
+    }
+
     public function doLogin() {
         if ($this->loginView->userWantsToLogin()) {
             try {
@@ -25,6 +31,7 @@ class Login {
                 $user = new \Model\User($userCredentials);
                 // TEMP now returs a string but should return a user
                 $this->userDatabase->loginUser($user);
+                $this->loginView->reloadPageAndLogin();
             } catch (\Throwable $error) {
                 $this->loginView->reloadPageAndShowErrorMessage($error->getMessage());
             }

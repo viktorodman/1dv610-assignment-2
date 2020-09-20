@@ -18,10 +18,14 @@ class Login {
 	private static $usernameField = 'LoginView::LoginField';
 	private static $errorMessageNoUsername = 'Username is missing';
 	private static $errorMessageNoPassword = 'Password is missing';
-	private static $errorMessageSessionIndex = "LoginView::errorMessageSessionIndex";
+	private static $welcomeMessage = 'Welcome';
+	private static $goodByeMessage = 'Bye bye!';
+	private static $messageSessionIndex = "LoginView::messageSessionIndex";
 	private static $rememberedUserSessionIndex = "LoginView::rememberedUserSessionIndex";
+	private static $userSessionIndex = "LoginView::userSessionIndex";
+
 	
-    private $errorMessageWasSetAndShouldNotBeRemovedDuringThisRequest = false;
+    private $messageWasSetAndShouldNotBeRemovedDuringThisRequest = false;
     private $usernameWasSetAndShouldNotBeRemovedDuringThisRequest = false;
 	
 
@@ -35,24 +39,42 @@ class Login {
 	 */
 	public function response() {
 		$remeberedUsername = $this->getRememberedSessionVariable($this->usernameWasSetAndShouldNotBeRemovedDuringThisRequest, self::$rememberedUserSessionIndex);
-		$message = $this->getRememberedSessionVariable($this->errorMessageWasSetAndShouldNotBeRemovedDuringThisRequest, self::$errorMessageSessionIndex);
+		$message = $this->getRememberedSessionVariable($this->messageWasSetAndShouldNotBeRemovedDuringThisRequest, self::$messageSessionIndex);
+
+
+		$response;
+
+		if ($this->userHasActiveSession()) {
+			$response = $this->generateLogoutButtonHTML($message);
+		} else {
+			$response = $this->generateLoginFormHTML($message, $remeberedUsername);
+		}
 		
-		$response = $this->generateLoginFormHTML($message, $remeberedUsername);
-		//$response .= $this->generateLogoutButtonHTML($message);
+		
 		return $response;
 	}
 
 	public function reloadPageAndLogin() {
         $this->messageWasSetAndShouldNotBeRemovedDuringThisRequest = true;
+		$_SESSION[self::$messageSessionIndex] = self::$welcomeMessage;
+		$_SESSION[self::$userSessionIndex] = $_POST[self::$name];
 
         header('Location: /');
 	}
 
+
+	public function reloadPageAndLogout() {
+		$this->messageWasSetAndShouldNotBeRemovedDuringThisRequest = true;
+		$_SESSION[self::$messageSessionIndex] = self::$goodByeMessage;
+		unset($_SESSION[self::$userSessionIndex]);
+	}
+
+
 	public function reloadPageAndShowErrorMessage(string $errorMessage) {
-		$_SESSION[self::$errorMessageSessionIndex] = $errorMessage;
+		$_SESSION[self::$messageSessionIndex] = $errorMessage;
 		$_SESSION[self::$rememberedUserSessionIndex] = $_POST[self::$name];
 
-		$this->errorMessageWasSetAndShouldNotBeRemovedDuringThisRequest = true;
+		$this->messageWasSetAndShouldNotBeRemovedDuringThisRequest = true;
 		$this->usernameWasSetAndShouldNotBeRemovedDuringThisRequest = true;
 		
 		header('Location: /');
@@ -62,8 +84,16 @@ class Login {
 		return isset($_POST[self::$login]);
 	}
 
+	public function userWantsToLogout () : bool {
+		return isset($_POST[self::$logout]);
+	}
+
 	public function getRequestUserCredentials() : \Model\Credentials {
 		return new \Model\Credentials($this->getRequestUsername(), $this->getRequestPassword());
+	}
+
+	private function userHasActiveSession() : bool {
+		return isset($_SESSION[self::$userSessionIndex]);
 	}
 
 	
@@ -118,13 +148,13 @@ class Login {
 	}
 
 	private function getErrorMessage() {
-		if ($this->errorMessageWasSetAndShouldNotBeRemovedDuringThisRequest) {
-            return $_SESSION[self::$errorMessageSessionIndex];
+		if ($this->messageWasSetAndShouldNotBeRemovedDuringThisRequest) {
+            return $_SESSION[self::$messageSessionIndex];
         }
 
-        if(isset($_SESSION[self::$errorMessageSessionIndex])) {
-            $message = $_SESSION[self::$errorMessageSessionIndex];
-            unset($_SESSION[self::$errorMessageSessionIndex]);
+        if(isset($_SESSION[self::$messageSessionIndex])) {
+            $message = $_SESSION[self::$messageSessionIndex];
+            unset($_SESSION[self::$messageSessionIndex]);
             return $message;
         }
         return "";
@@ -145,7 +175,7 @@ class Login {
             throw new \Exception(self::$errorMessageNoPassword);
 		}
 		
-		return new \Model\Password(self::$password);
+		return new \Model\Password($_POST[self::$password]);
 	}
 	
 }

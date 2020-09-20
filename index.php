@@ -33,14 +33,17 @@ $layoutController = new \Controller\Layout($layoutView);
 
 $registerController->doRegister();
 $loginController->doLogin();
+$loginController->doLogout();
 $layoutController->doLayout();
 
+$isLoggedIn = isset($_SESSION['LoginView::userSessionIndex']);
 
 
 
 
 
-$layoutView->render(false, $loginView, $dateTimeView, $registerView);
+
+$layoutView->render($isLoggedIn, $loginView, $dateTimeView, $registerView);
 
 
 

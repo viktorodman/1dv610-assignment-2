@@ -50,11 +50,9 @@ class UserDatabase {
         $password = $user->getCredentials()->getPassword();
 
         if ($this->userExists($username)) {
-            if ($this->passwordIsCorrect($username, $password)) {
-
-            } else {
+            if (!$this->passwordIsCorrect($username, $password)) {
                 throw new \Exception("Wrong name or password");
-            }
+            } 
         } else {
             throw new \Exception("Wrong name or password");
         }
