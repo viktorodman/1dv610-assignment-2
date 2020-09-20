@@ -63,7 +63,7 @@ class UserDatabase {
     }
 
     private function passwordIsCorrect(string $username, string $password) : bool {
-        $query = "SELECT ". self::$rowPassword ." FROM " . self::$tableName . " WHERE username LIKE '". $username ."'";
+        $query = "SELECT ". self::$rowPassword ." FROM " . self::$tableName . " WHERE username LIKE BINARY '". $username ."'";
         
         $stmt = $this->connection->query($query);
         $stmt = \mysqli_fetch_row($stmt);
@@ -74,7 +74,7 @@ class UserDatabase {
 
 
     private function userExists(string $username) : bool {
-        $query = "SELECT * FROM " . self::$tableName . " WHERE username LIKE '". $username ."'";
+        $query = "SELECT * FROM " . self::$tableName . " WHERE username LIKE BINARY '". $username ."'";
         $userExists = 0;
         
         if($stmt = $this->connection->prepare($query)) {
