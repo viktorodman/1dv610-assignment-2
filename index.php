@@ -38,7 +38,7 @@ $loginController->doLogin();
 $loginController->doLogout();
 $layoutController->doLayout();
 
-$isLoggedIn = isset($_SESSION['LoginView::userSessionIndex']);
+$isLoggedIn = $uss->userSessionIsActive();
 
 
 
