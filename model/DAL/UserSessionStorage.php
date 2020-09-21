@@ -55,14 +55,14 @@ class UserSessionStorage {
 
     private function getRememberedSessionVariable(bool $variableWasSet, string $variableSessionIndex) {
 		if ($variableWasSet) {
-            return $_SESSION[$variableSessionIndex];
+            return filter_var($_SESSION[$variableSessionIndex], FILTER_SANITIZE_STRING);
         }
 
         if(isset($_SESSION[$variableSessionIndex])) {
-            $message = $_SESSION[$variableSessionIndex];
+            $message = filter_var($_SESSION[$variableSessionIndex], FILTER_SANITIZE_STRING);
             unset($_SESSION[$variableSessionIndex]);
             return $message;
         }
         return "";
-    }
+	}
 }
