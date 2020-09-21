@@ -20,14 +20,14 @@ class Login {
 	private static $errorMessageNoPassword = 'Password is missing';
 	private static $welcomeMessage = 'Welcome';
 	private static $goodByeMessage = 'Bye bye!';
-	private static $messageSessionIndex = "LoginView::messageSessionIndex";
-	private static $rememberedUserSessionIndex = "LoginView::rememberedUserSessionIndex";
-	private static $userSessionIndex = "LoginView::userSessionIndex";
 
+	private $userSessionStorage;
 	
-    private $messageWasSetAndShouldNotBeRemovedDuringThisRequest = false;
-    private $usernameWasSetAndShouldNotBeRemovedDuringThisRequest = false;
 	
+
+	public function __construct(\Model\DAL\UserSessionStorage $userSessionStorage) {
+		$this->userSessionStorage = $userSessionStorage;
+	}
 
 	
 	/**
@@ -38,8 +38,11 @@ class Login {
 	 * @return  void BUT writes to standard output and cookies!
 	 */
 	public function response() {
-		$remeberedUsername = $this->getRememberedSessionVariable($this->usernameWasSetAndShouldNotBeRemovedDuringThisRequest, self::$rememberedUserSessionIndex);
-		$message = $this->getRememberedSessionVariable($this->messageWasSetAndShouldNotBeRemovedDuringThisRequest, self::$messageSessionIndex);
+		
+
+
+		$remeberedUsername = $this->userSessionStorage->getRememberedUsername();
+		$message = $this->userSessionStorage->getSessionMessage();
 
 
 		$response;
@@ -55,29 +58,31 @@ class Login {
 	}
 
 	public function reloadPageAndLogin() {
-        $this->messageWasSetAndShouldNotBeRemovedDuringThisRequest = true;
-		$_SESSION[self::$messageSessionIndex] = self::$welcomeMessage;
-		$_SESSION[self::$userSessionIndex] = $_POST[self::$name];
+		$this->userSessionStorage->setSessionMessage(self::$welcomeMessage);
+		$this->userSessionStorage->setSessionUser(self::$name);
 
-        header('Location: /');
-	}
-
-
-	public function reloadPageAndLogout() {
-		$this->messageWasSetAndShouldNotBeRemovedDuringThisRequest = true;
-		$_SESSION[self::$messageSessionIndex] = self::$goodByeMessage;
-		unset($_SESSION[self::$userSessionIndex]);
+        $this->userSessionStorage->setMessageToBeViewed();
 
 		header('Location: /');
 	}
 
 
-	public function reloadPageAndShowErrorMessage(string $errorMessage) {
-		$_SESSION[self::$messageSessionIndex] = $errorMessage;
-		$_SESSION[self::$rememberedUserSessionIndex] = $_POST[self::$name];
+	public function reloadPageAndLogout() {
+		$this->userSessionStorage->setSessionMessage(self::$goodByeMessage);
+		$this->userSessionStorage->removeUserSession();
 
-		$this->messageWasSetAndShouldNotBeRemovedDuringThisRequest = true;
-		$this->usernameWasSetAndShouldNotBeRemovedDuringThisRequest = true;
+		$this->userSessionStorage->setMessageToBeViewed();
+		
+		header('Location: /');
+	}
+
+
+	public function reloadPageAndShowErrorMessage(string $errorMessage) {
+		$this->userSessionStorage->setSessionMessage($errorMessage);
+		$this->userSessionStorage->setRemeberedUsername($_POST[self::$name]);
+
+		$this->userSessionStorage->setMessageToBeViewed();
+		$this->userSessionStorage->setUsernameToBeRemembered();
 		
 		header('Location: /');
 	}
@@ -95,8 +100,9 @@ class Login {
 	}
 
 	public function userHasActiveSession() : bool {
-		return isset($_SESSION[self::$userSessionIndex]);
+		return $this->userSessionStorage->userSessionIsActive();
 	}
+
 
 	
 	/**

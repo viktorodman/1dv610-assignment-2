@@ -5,6 +5,7 @@ namespace View;
 require_once('model/Username.php');
 require_once('model/Password.php');
 require_once('model/Credentials.php');
+require_once('Login.php');
 
 class Register {
     private static $registerURLID = 'register';
@@ -16,17 +17,17 @@ class Register {
     private static $passwordToShortMessage = 'Password has too few characters, at least 6 characters.';
     private static $usernameToShortMessage = 'Username has too few characters, at least 3 characters.';
     private static $passwordDoesNotMatchMessage = 'Passwords do not match.';
-    
-    private static $errorMessageSessionIndex = "RegisterView::errorMessageSessionIndex";
-    private static $rememberedUserSessionIndex = "RegisterView::rememberedUserSessionIndex";
-    
-    private $errorMessageWasSetAndShouldNotBeRemovedDuringThisRequest = false;
-    private $usernameWasSetAndShouldNotBeRemovedDuringThisRequest = false;
-    
+    private static $registeredUserMessage = 'Registered new user.';
+
+    private $userSessionStorage;
+ 
+    public function __construct(\Model\DAL\UserSessionStorage $userSessionStorage) {
+        $this->userSessionStorage = $userSessionStorage;
+    }
 
     public function response() {
-        $remeberedUsername = $this->getRememberedSessionVariable($this->usernameWasSetAndShouldNotBeRemovedDuringThisRequest, self::$rememberedUserSessionIndex);
-        $errorMessage = $this->getRememberedSessionVariable($this->errorMessageWasSetAndShouldNotBeRemovedDuringThisRequest, self::$errorMessageSessionIndex);
+        $remeberedUsername = $this->userSessionStorage->getRememberedUsername();
+        $errorMessage = $this->userSessionStorage->getSessionMessage();
         
         return $this->generateRegisterFormHTML($errorMessage, $remeberedUsername);
     }
@@ -43,18 +44,23 @@ class Register {
         return new \Model\Credentials($this->getUsername(), $this->getPassword());
     }
 
-    public function reloadPageAndWelcomeUser() {
-        // NEED TO SET THE SESSION MESSAGE VARIABLE FROM LOGIN VIEW
+    public function reloadPageAndNotifyRegisteredAccount() {
+        $this->userSessionStorage->setSessionMessage(self::$registeredUserMessage);
+		$this->userSessionStorage->setRemeberedUsername($_POST[self::$name]);
+
+        $this->userSessionStorage->setUsernameToBeRemembered();
+        $this->userSessionStorage->setMessageToBeViewed();
+
+        header('Location: /');
     }
 
 
     public function reloadPageAndShowErrorMessage(string $errorMessage) {
-		$_SESSION[self::$errorMessageSessionIndex] = $errorMessage;
-        $_SESSION[self::$rememberedUserSessionIndex] = $_POST[self::$name];
-        
+		$this->userSessionStorage->setSessionMessage($errorMessage);
+		$this->userSessionStorage->setRemeberedUsername($_POST[self::$name]);
 
-		$this->errorMessageWasSetAndShouldNotBeRemovedDuringThisRequest = true;
-		$this->usernameWasSetAndShouldNotBeRemovedDuringThisRequest = true;
+		$this->userSessionStorage->setMessageToBeViewed();
+		$this->userSessionStorage->setUsernameToBeRemembered();
 		
 		header('Location: /?register');
 	}
@@ -99,18 +105,4 @@ class Register {
             </fieldset>
         </form>';
     }
-
-    private function getRememberedSessionVariable(bool $variableWasSet, string $variableSessionIndex) {
-		if ($variableWasSet) {
-            return filter_var($_SESSION[$variableSessionIndex], FILTER_SANITIZE_STRING);
-        }
-
-        if(isset($_SESSION[$variableSessionIndex])) {
-            $message = filter_var($_SESSION[$variableSessionIndex], FILTER_SANITIZE_STRING);
-            unset($_SESSION[$variableSessionIndex]);
-            return $message;
-        }
-        return "";
-	}
-
 }

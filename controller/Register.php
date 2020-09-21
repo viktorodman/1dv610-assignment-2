@@ -20,7 +20,7 @@ class Register {
                 $userCredentials = $this->registerView->getRegisterCredentials();
                 $user = new \Model\User($userCredentials);
                 $this->userDatabase->registerUser($user);
-                $this->registerView->reloadPageAndWelcomeUser();
+                $this->registerView->reloadPageAndNotifyRegisteredAccount();
                 
                 //  Try to register user on database
             } catch (\Throwable $error) {

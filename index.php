@@ -12,20 +12,22 @@ require_once('controller/Layout.php');
 require_once('controller/Register.php');
 
 require_once('model/DAL/UserDatabase.php');
+require_once('model/DAL/UserSessionStorage.php');
 //MAKE SURE ERRORS ARE SHOWN... MIGHT WANT TO TURN THIS OFF ON A PUBLIC SERVER
 error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 
 
 $db = new \Model\DAL\UserDatabase();
+$uss = new \Model\DAL\UserSessionStorage();
 
 $db->connect();
 
 //CREATE OBJECTS OF THE VIEWSs
 $layoutView = new \View\Layout();
-$loginView = new \View\Login();
+$loginView = new \View\Login($uss);
 $dateTimeView = new \View\DateTime();
-$registerView = new \View\Register();
+$registerView = new \View\Register($uss);
 
 $registerController = new \Controller\Register($registerView, $db);
 $loginController = new \Controller\Login($loginView, $db);
