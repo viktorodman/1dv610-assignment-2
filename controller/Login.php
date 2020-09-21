@@ -25,20 +25,22 @@ class Login {
     }
 
     public function doLogin() {
-        if ($this->loginView->userWantsToLogin()) {
-            try {
-                // Get Credentials
-
-                $userCredentials = $this->loginView->getRequestUserCredentials();
-
-                $user = new \Model\User($userCredentials);
-                // TEMP now returs a string but should return a user
-                $this->userDatabase->loginUser($user);
-                $this->loginView->reloadPageAndLogin();
-            } catch (\Throwable $error) {
-                $this->loginView->reloadPageAndShowErrorMessage($error->getMessage());
+        if (!$this->loginView->userHasActiveSession()) {
+            if ($this->loginView->userWantsToLogin()) {
+                try {
+                    // Get Credentials
+    
+                    $userCredentials = $this->loginView->getRequestUserCredentials();
+    
+                    $user = new \Model\User($userCredentials);
+                    // TEMP now returs a string but should return a user
+                    $this->userDatabase->loginUser($user);
+                    $this->loginView->reloadPageAndLogin();
+                } catch (\Throwable $error) {
+                    $this->loginView->reloadPageAndShowErrorMessage($error->getMessage());
+                }
+                
             }
-            
         }
     }
 
