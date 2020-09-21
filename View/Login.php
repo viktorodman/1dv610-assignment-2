@@ -67,6 +67,8 @@ class Login {
 		$this->messageWasSetAndShouldNotBeRemovedDuringThisRequest = true;
 		$_SESSION[self::$messageSessionIndex] = self::$goodByeMessage;
 		unset($_SESSION[self::$userSessionIndex]);
+
+		header('Location: /');
 	}
 
 
@@ -92,7 +94,7 @@ class Login {
 		return new \Model\Credentials($this->getRequestUsername(), $this->getRequestPassword());
 	}
 
-	private function userHasActiveSession() : bool {
+	public function userHasActiveSession() : bool {
 		return isset($_SESSION[self::$userSessionIndex]);
 	}
 

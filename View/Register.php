@@ -43,6 +43,10 @@ class Register {
         return new \Model\Credentials($this->getUsername(), $this->getPassword());
     }
 
+    public function reloadPageAndWelcomeUser() {
+        // NEED TO SET THE SESSION MESSAGE VARIABLE FROM LOGIN VIEW
+    }
+
 
     public function reloadPageAndShowErrorMessage(string $errorMessage) {
 		$_SESSION[self::$errorMessageSessionIndex] = $errorMessage;

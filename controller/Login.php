@@ -16,9 +16,12 @@ class Login {
     }
 
     public function doLogout() {
-        if ($this->loginView->userWantsToLogout()) {
-            $this->loginView->reloadPageAndLogout();
-        }
+        if ($this->loginView->userHasActiveSession()) {
+            if ($this->loginView->userWantsToLogout()) {
+            
+                $this->loginView->reloadPageAndLogout();
+            }
+        } 
     }
 
     public function doLogin() {

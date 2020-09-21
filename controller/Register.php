@@ -20,7 +20,8 @@ class Register {
                 $userCredentials = $this->registerView->getRegisterCredentials();
                 $user = new \Model\User($userCredentials);
                 $this->userDatabase->registerUser($user);
-                header('Location: index.php?');
+                $this->registerView->reloadPageAndWelcomeUser();
+                
                 //  Try to register user on database
             } catch (\Throwable $error) {
                 $this->registerView->reloadPageAndShowErrorMessage($error->getMessage());
