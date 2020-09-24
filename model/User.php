@@ -3,9 +3,6 @@
 namespace Model;
 
 class User {
-
-    private static $username = "Admin";
-    private static $password = "Password";
     private static $errorMessage = "Wrong name or password";
 
     private $userCredentials;

@@ -11,8 +11,6 @@ class Login {
 	private static $logout = 'LoginView::Logout';
 	private static $name = 'LoginView::UserName';
 	private static $password = 'LoginView::Password';
-	private static $cookieName = 'LoginView::CookieName';
-	private static $cookiePassword = 'LoginView::CookiePassword';
 	private static $keep = 'LoginView::KeepMeLoggedIn';
 	private static $messageId = 'LoginView::Message';
 	private static $usernameField = 'LoginView::LoginField';
@@ -20,13 +18,15 @@ class Login {
 	private static $errorMessageNoPassword = 'Password is missing';
 	private static $welcomeMessage = 'Welcome';
 	private static $goodByeMessage = 'Bye bye!';
+	private static $loginCookieMessage = "Welcome back with cookie";
 
 	private $userSessionStorage;
-	
+	private $userCookieStorage;
 	
 
-	public function __construct(\Model\DAL\UserSessionStorage $userSessionStorage) {
+	public function __construct(\Model\DAL\UserSessionStorage $userSessionStorage, \Model\DAL\UserCookieStorage $userCookieStorage) {
 		$this->userSessionStorage = $userSessionStorage;
+		$this->userCookieStorage = $userCookieStorage;
 	}
 
 	
@@ -38,13 +38,8 @@ class Login {
 	 * @return  void BUT writes to standard output and cookies!
 	 */
 	public function response() {
-		
-
-
 		$remeberedUsername = $this->userSessionStorage->getRememberedUsername();
 		$message = $this->userSessionStorage->getSessionMessage();
-
-
 		$response;
 
 		if ($this->userHasActiveSession()) {
@@ -61,7 +56,7 @@ class Login {
 		$this->userSessionStorage->setSessionMessage(self::$welcomeMessage);
 		$this->userSessionStorage->setSessionUser(self::$name);
 
-        $this->userSessionStorage->setMessageToBeViewed();
+		$this->userSessionStorage->setMessageToBeViewed();
 
 		header('Location: /');
 	}
@@ -71,6 +66,10 @@ class Login {
 		$this->userSessionStorage->setSessionMessage(self::$goodByeMessage);
 		$this->userSessionStorage->removeUserSession();
 
+		if ($this->userCookieStorage->userWantsToLoginWithCookies()) {
+			$this->userCookieStorage->unsetCookies();
+		}
+
 		$this->userSessionStorage->setMessageToBeViewed();
 		
 		header('Location: /');
@@ -79,12 +78,17 @@ class Login {
 
 	public function reloadPageAndShowErrorMessage(string $errorMessage) {
 		$this->userSessionStorage->setSessionMessage($errorMessage);
+		
 		$this->userSessionStorage->setRemeberedUsername($_POST[self::$name]);
 
 		$this->userSessionStorage->setMessageToBeViewed();
 		$this->userSessionStorage->setUsernameToBeRemembered();
 		
 		header('Location: /');
+	}
+
+	public function userWantsToBeRemembered() : bool {
+		return isset($_POST[self::$keep]);
 	}
 
 	public function userWantsToLogin () : bool {
@@ -95,6 +99,10 @@ class Login {
 		return isset($_POST[self::$logout]);
 	}
 
+	public function userWantsToLoginWithCookies() : bool {
+		return $this->userCookieStorage->userWantsToLoginWithCookies();
+	}
+
 	public function getRequestUserCredentials() : \Model\Credentials {
 		return new \Model\Credentials($this->getRequestUsername(), $this->getRequestPassword());
 	}
@@ -103,7 +111,33 @@ class Login {
 		return $this->userSessionStorage->userSessionIsActive();
 	}
 
+	public function validateCookies() {
+		$this->userCookieStorage->validateUserCookies();
+	}
 
+
+	public function reloadPageAndLoginWithCookie() {
+		$username;
+
+		$this->userSessionStorage->setSessionMessage(self::$loginCookieMessage);
+		if (isset($_POST[self::$name])) {
+			$username = $_POST[self::$name];
+		} else {
+			$username = $this->userCookieStorage->getCookieUsername();
+		}
+
+		$this->userSessionStorage->setSessionUser($username);
+
+		$this->userSessionStorage->setMessageToBeViewed();
+
+		header('Location: /');
+	}
+
+	public function createUserCookie() {
+		$this->userCookieStorage->createUserCookies($_POST[self::$name]);
+	}
+
+	
 	
 	/**
 	* Generate HTML code on the output buffer for the logout button
@@ -142,19 +176,6 @@ class Login {
 		';
 	}
 
-	private function getRememberedSessionVariable(bool $variableWasSet, string $variableSessionIndex) {
-		if ($variableWasSet) {
-            return $_SESSION[$variableSessionIndex];
-        }
-
-        if(isset($_SESSION[$variableSessionIndex])) {
-            $message = $_SESSION[$variableSessionIndex];
-            unset($_SESSION[$variableSessionIndex]);
-            return $message;
-        }
-        return "";
-	}
-
 	private function getErrorMessage() {
 		if ($this->messageWasSetAndShouldNotBeRemovedDuringThisRequest) {
             return $_SESSION[self::$messageSessionIndex];
@@ -175,8 +196,6 @@ class Login {
 		
 		return new \Model\Username($_POST[self::$name]);
 	}
-
-
 
 	private function getRequestPassword() : \Model\Password {
 		if (empty($_POST[self::$password])) {

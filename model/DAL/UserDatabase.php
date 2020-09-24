@@ -6,34 +6,39 @@ class UserDatabase {
     private static $tableName = "Users";
     private static $rowUsername = "username";
     private static $rowPassword = "password";
+    private $hostname;
+    private $username;
+    private $password;
+    private $database;
+
     private $connection;
 
-    public function connect() {
-         $url = getenv('JAWSDB_URL');
+    public function __construct(\mysqli $dbconnection) {
+        $url = getenv('JAWSDB_URL');
          
-         $dbparts = parse_url($url);
-         
+        $dbparts = parse_url($url);
+        // FÅR KANSKE GÖRA EN DATABAS CLASS OCH Använda den För komma åt USERS OCH COOKIE STRINGS
 
-         $hostname = $dbparts['host'];
-         $username = $dbparts['user'];
-         $password = $dbparts['pass'];
-         $database = ltrim($dbparts['path'],'/');
-         // Create connection
-         $this->connection = new \mysqli($hostname, $username, $password, $database);
- 
-         // Check connection
-         if ($this->connection->connect_error) {
-             die("Connection failed: " . $this->connection->connect_error);
-         } 
+        $this->hostname = $dbparts['host'];
+        $this->username = $dbparts['user'];
+        $this->password = $dbparts['pass'];
+        $this->database = ltrim($dbparts['path'],'/');
 
-         $this->createUserTableIfNeeded();
+        $this->connection = $dbconnection; 
+
+        $this->createUserTableIfNeeded();
     }
+
 
     public function registerUser(\Model\User $user) { 
         $this->createUserTableIfNeeded();
+        $connection = new \mysqli($this->hostname, $this->username, $this->password, $this->database);
+
         // Check if user already exists
-        $username = $user->getCredentials()->getUsername();
-        $password = $user->getCredentials()->getPassword();
+        $credentials = $user->getCredentials();
+
+        $username = $credentials->getUsername();
+        $password = $credentials->getPassword();
 
         if($this->userExists($username)) {
             throw new \Exception("User exists, pick another username.");
@@ -41,7 +46,7 @@ class UserDatabase {
         } else {
             $hash = $this->hashPassword($password);
             $query = "INSERT INTO " . self::$tableName . " (username, password) VALUES ('". $username ."', '". $hash ."')";
-            $this->connection->query($query);
+            $connection->query($query);
         }
     }
 
@@ -63,9 +68,11 @@ class UserDatabase {
     }
 
     private function passwordIsCorrect(string $username, string $password) : bool {
+        $connection = new \mysqli($this->hostname, $this->username, $this->password, $this->database);
+
         $query = "SELECT ". self::$rowPassword ." FROM " . self::$tableName . " WHERE username LIKE BINARY '". $username ."'";
         
-        $stmt = $this->connection->query($query);
+        $stmt = $connection->query($query);
         $stmt = \mysqli_fetch_row($stmt);
 
 
@@ -74,10 +81,12 @@ class UserDatabase {
 
 
     private function userExists(string $username) : bool {
+        $connection = new \mysqli($this->hostname, $this->username, $this->password, $this->database);
+
         $query = "SELECT * FROM " . self::$tableName . " WHERE username LIKE BINARY '". $username ."'";
         $userExists = 0;
         
-        if($stmt = $this->connection->prepare($query)) {
+        if($stmt = $connection->prepare($query)) {
             $stmt->execute();
         
             $stmt->store_result();
@@ -92,12 +101,14 @@ class UserDatabase {
     }
 
     private function createUserTableIfNeeded() {
+        $connection = new \mysqli($this->hostname, $this->username, $this->password, $this->database);
+
         $createTable = "CREATE TABLE IF NOT EXISTS " . self::$tableName . " (
             username VARCHAR(30) NOT NULL UNIQUE,
             password VARCHAR(60) NOT NULL
             )";
 
-        if($this->connection->query($createTable)) {
+        if($connection->query($createTable)) {
            // Add message
         } else {
             // Add error message

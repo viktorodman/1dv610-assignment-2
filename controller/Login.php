@@ -18,30 +18,35 @@ class Login {
     public function doLogout() {
         if ($this->loginView->userHasActiveSession()) {
             if ($this->loginView->userWantsToLogout()) {
-            
                 $this->loginView->reloadPageAndLogout();
             }
         } 
     }
 
     public function doLogin() {
-        if (!$this->loginView->userHasActiveSession()) {
-            if ($this->loginView->userWantsToLogin()) {
-                try {
-                    // Get Credentials
-    
-                    $userCredentials = $this->loginView->getRequestUserCredentials();
-    
-                    $user = new \Model\User($userCredentials);
-                    // TEMP now returs a string but should return a user
-                    $this->userDatabase->loginUser($user);
-                    $this->loginView->reloadPageAndLogin();
-                } catch (\Throwable $error) {
-                    $this->loginView->reloadPageAndShowErrorMessage($error->getMessage());
+        try {
+            if (!$this->loginView->userHasActiveSession()) {
+                if ($this->loginView->userWantsToLoginWithCookies()) {
+                    $this->loginView->validateCookies();
+                    $this->loginView->reloadPageAndLoginWithCookie();
+
+                } else if ($this->loginView->userWantsToLogin()) {
+                    
+                        $userCredentials = $this->loginView->getRequestUserCredentials();
+                        $user = new \Model\User($userCredentials);
+                        $this->userDatabase->loginUser($user);
+
+
+                        if ($this->loginView->userWantsToBeRemembered()) {
+                            $this->loginView->createUserCookie();
+                            $this->loginView->reloadPageAndLoginWithCookie();
+                        } else {
+                            $this->loginView->reloadPageAndLogin();
+                        }
                 }
-                
             }
+        } catch (\Throwable $error) {
+            $this->loginView->reloadPageAndShowErrorMessage($error->getMessage());
         }
     }
-
 }
