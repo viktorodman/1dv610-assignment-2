@@ -5,14 +5,11 @@ namespace Model\DAL;
 class UserSessionStorage {
     private static $messageSessionIndex = "messageSessionIndex";
 	private static $rememberedUserSessionIndex = "rememberedUserSessionIndex";
-	private static $userSessionIndex = "userSessionIndex";
+    private static $userSessionIndex = "userSessionIndex";
+    private static $browserSessionIndex = "browserSessionIndex";
 
     private $messageWasSetAndShouldNotBeRemovedDuringThisRequest = false;
     private $usernameWasSetAndShouldNotBeRemovedDuringThisRequest = false;
-
-
-
-    
 
     public function getRememberedUsername() : string {
         return $this->getRememberedSessionVariable($this->usernameWasSetAndShouldNotBeRemovedDuringThisRequest, self::$rememberedUserSessionIndex);
@@ -24,17 +21,18 @@ class UserSessionStorage {
 
 
     public function userSessionIsActive() : bool {
-        return isset($_SESSION[self::$userSessionIndex]);
+
+        
+        return isset($_SESSION[self::$userSessionIndex]) && $_SESSION[self::$browserSessionIndex] == $_SERVER['HTTP_USER_AGENT'];
     }
 
     public function setSessionMessage(string $message) {
-        // Maybe change this
         $_SESSION[self::$messageSessionIndex] = $message;
     }
 
     public function setSessionUser(string $id) {
-        // Maybe change this
         $_SESSION[self::$userSessionIndex] = $id;
+        $_SESSION[self::$browserSessionIndex] = $_SERVER['HTTP_USER_AGENT'];
     }
 
     public function setRemeberedUsername(string $username) {
