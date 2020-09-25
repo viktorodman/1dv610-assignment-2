@@ -79,12 +79,17 @@ class Login {
 	public function reloadPageAndShowErrorMessage(string $errorMessage) {
 		$this->userSessionStorage->setSessionMessage($errorMessage);
 		
-		$this->userSessionStorage->setRemeberedUsername($_POST[self::$name]);
+		if (isset($_POST[self::$name])) {
+			$this->userSessionStorage->setRemeberedUsername($_POST[self::$name]);
+			$this->userSessionStorage->setUsernameToBeRemembered();
+			
+		}
+		
 
 		$this->userSessionStorage->setMessageToBeViewed();
-		$this->userSessionStorage->setUsernameToBeRemembered();
 		
-		header('Location: /');
+		
+		/* header('Location: /'); */
 	}
 
 	public function userWantsToBeRemembered() : bool {

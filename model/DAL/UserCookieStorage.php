@@ -5,7 +5,8 @@ namespace Model\DAL;
 class UserCookieStorage {
     private static $cookieName = 'LoginView::CookieName';
 	private static $cookiePassword = 'LoginView::CookiePassword';
-    private static $secondsInAMonth = 3600 * 24 * 30;
+    private static $secondsInAMonth = 3600 * 2;
+    /* private static $secondsInAMonth = 3600 * 24 * 30; */
     private $cookieDB;
 
     public function __construct(\Model\DAL\CookieDatabase $cookieDB) {
@@ -28,6 +29,8 @@ class UserCookieStorage {
 
             $this->setUserCookies($_COOKIE[self::$cookieName], $newPassword, $cookieDuration);
             $this->cookieDB->updateAndSaveCookieInfo($_COOKIE[self::$cookieName], $newPassword, $cookieDuration);
+        } else {
+            throw new \Exception("Wrong information in cookies");
         }
     }
 

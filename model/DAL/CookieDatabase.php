@@ -39,10 +39,12 @@ class CookieDatabase {
 
     public function cookiesAreValid($cookieUsername, $cookiePassword) : bool {
         if ($this->passwordIsValid($cookieUsername, $cookiePassword) && $this->cookieIsNotExpired($cookieUsername)) {
-            return true;
-        }
+           return true;
+        } else {
 
-        return false;
+           
+            throw new \Exception("Wrong information in cookies");
+        }
     }
 
     private function saveCookie(string $cookieUsername, string $cookiePassword, int $cookieDuration) {
@@ -106,6 +108,9 @@ class CookieDatabase {
 
         $query = "SELECT expiredate FROM " . self::$tableName . " WHERE cookieuser LIKE BINARY '". $cookieUsername ."'";
         $cookieExpiredate = $connection->query($query);
+
+        var_dump($cookieExpiredate);
+        exit;
 
         if ($cookieExpiredate < time()) {
             throw new \Exception("Wrong information in cookies");
