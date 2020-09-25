@@ -84,12 +84,14 @@ class Login {
 			$this->userSessionStorage->setUsernameToBeRemembered();
 			
 		}
+
+		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+			header('Location: /');
+		}
 		
 
 		$this->userSessionStorage->setMessageToBeViewed();
 		
-		
-		/* header('Location: /'); */
 	}
 
 	public function userWantsToBeRemembered() : bool {

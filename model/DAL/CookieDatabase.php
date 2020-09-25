@@ -39,10 +39,9 @@ class CookieDatabase {
 
     public function cookiesAreValid($cookieUsername, $cookiePassword) : bool {
         if ($this->passwordIsValid($cookieUsername, $cookiePassword) && $this->cookieIsNotExpired($cookieUsername)) {
+            
            return true;
         } else {
-
-           
             throw new \Exception("Wrong information in cookies");
         }
     }
@@ -85,7 +84,7 @@ class CookieDatabase {
         return $userExists == 1;
     }
 
-    private function updateAndSaveCookieInfo(string $username, string $password, int $duration) {
+    public function updateAndSaveCookieInfo(string $username, string $password, int $duration) {
         $connection = new \mysqli($this->hostname, $this->username, $this->password, $this->database);
 
         $query = "UPDATE " . self::$tableName . " SET cookiepassword='". $password ."', expiredate='". $duration ."' WHERE cookieuser='". $username ."'";
@@ -95,12 +94,17 @@ class CookieDatabase {
     }
 
     private function passwordIsValid(string $cookieUsername, string $cookiePassword) : bool {
+
+       
         $connection = new \mysqli($this->hostname, $this->username, $this->password, $this->database);
 
         $query = "SELECT cookiepassword FROM " . self::$tableName . " WHERE cookieuser LIKE BINARY '". $cookieUsername ."'";
         $savedPassword = $connection->query($query);
+        $savedPassword = \mysqli_fetch_row($savedPassword);
 
-        return $savedPassword === $cookiePassword; 
+       
+
+        return $savedPassword[0] === $cookiePassword; 
     }
 
     private function cookieIsNotExpired(string $cookieUsername) : bool {
@@ -109,10 +113,12 @@ class CookieDatabase {
         $query = "SELECT expiredate FROM " . self::$tableName . " WHERE cookieuser LIKE BINARY '". $cookieUsername ."'";
         $cookieExpiredate = $connection->query($query);
 
-        var_dump($cookieExpiredate);
-        exit;
+        $cookieExpiredate = \mysqli_fetch_row($cookieExpiredate);
 
-        if ($cookieExpiredate < time()) {
+        
+
+        if ($cookieExpiredate[0] < time()) {
+           
             throw new \Exception("Wrong information in cookies");
         }
 
