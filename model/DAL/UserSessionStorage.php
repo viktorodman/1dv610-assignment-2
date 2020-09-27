@@ -21,8 +21,6 @@ class UserSessionStorage {
 
 
     public function userSessionIsActive() : bool {
-
-        
         return isset($_SESSION[self::$userSessionIndex]) && $_SESSION[self::$browserSessionIndex] == $_SERVER['HTTP_USER_AGENT'];
     }
 

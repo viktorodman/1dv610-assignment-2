@@ -14,15 +14,14 @@ class UserDatabase {
     private $connection;
 
     public function __construct(\mysqli $dbconnection) {
-        $url = getenv('JAWSDB_URL');
+        /* $url = getenv('JAWSDB_URL');
          
         $dbparts = parse_url($url);
-        // FÅR KANSKE GÖRA EN DATABAS CLASS OCH Använda den För komma åt USERS OCH COOKIE STRINGS
 
         $this->hostname = $dbparts['host'];
         $this->username = $dbparts['user'];
         $this->password = $dbparts['pass'];
-        $this->database = ltrim($dbparts['path'],'/');
+        $this->database = ltrim($dbparts['path'],'/'); */
 
         $this->connection = $dbconnection; 
 
@@ -32,7 +31,7 @@ class UserDatabase {
 
     public function registerUser(\Model\User $user) { 
         $this->createUserTableIfNeeded();
-        $connection = new \mysqli($this->hostname, $this->username, $this->password, $this->database);
+        /* $connection = new \mysqli($this->hostname, $this->username, $this->password, $this->database); */
 
         // Check if user already exists
         $credentials = $user->getCredentials();
@@ -46,7 +45,7 @@ class UserDatabase {
         } else {
             $hash = $this->hashPassword($password);
             $query = "INSERT INTO " . self::$tableName . " (username, password) VALUES ('". $username ."', '". $hash ."')";
-            $connection->query($query);
+            $this->connection->query($query);
         }
     }
 
@@ -68,11 +67,11 @@ class UserDatabase {
     }
 
     private function passwordIsCorrect(string $username, string $password) : bool {
-        $connection = new \mysqli($this->hostname, $this->username, $this->password, $this->database);
+        /* $connection = new \mysqli($this->hostname, $this->username, $this->password, $this->database); */
 
         $query = "SELECT ". self::$rowPassword ." FROM " . self::$tableName . " WHERE username LIKE BINARY '". $username ."'";
         
-        $stmt = $connection->query($query);
+        $stmt = $this->connection->query($query);
         $stmt = \mysqli_fetch_row($stmt);
 
 
@@ -81,12 +80,12 @@ class UserDatabase {
 
 
     private function userExists(string $username) : bool {
-        $connection = new \mysqli($this->hostname, $this->username, $this->password, $this->database);
+        /* $connection = new \mysqli($this->hostname, $this->username, $this->password, $this->database); */
 
         $query = "SELECT * FROM " . self::$tableName . " WHERE username LIKE BINARY '". $username ."'";
         $userExists = 0;
         
-        if($stmt = $connection->prepare($query)) {
+        if($stmt = $this->connection->prepare($query)) {
             $stmt->execute();
         
             $stmt->store_result();
@@ -101,14 +100,14 @@ class UserDatabase {
     }
 
     private function createUserTableIfNeeded() {
-        $connection = new \mysqli($this->hostname, $this->username, $this->password, $this->database);
+        /* $connection = new \mysqli($this->hostname, $this->username, $this->password, $this->database); */
 
         $createTable = "CREATE TABLE IF NOT EXISTS " . self::$tableName . " (
             username VARCHAR(30) NOT NULL UNIQUE,
             password VARCHAR(60) NOT NULL
             )";
 
-        if($connection->query($createTable)) {
+        if($this->connection->query($createTable)) {
            // Add message
         } else {
             // Add error message

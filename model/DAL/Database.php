@@ -8,9 +8,7 @@ class Database {
 
     public function __construct() {
         $url = getenv('JAWSDB_URL');
-         
         $dbparts = parse_url($url);
-        // FÅR KANSKE GÖRA EN DATABAS CLASS OCH Använda den För komma åt USERS OCH COOKIE STRINGS
 
         $hostname = $dbparts['host'];
         $username = $dbparts['user'];

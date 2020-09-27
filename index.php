@@ -49,11 +49,6 @@ $layoutController->doLayout();
 
 $isLoggedIn = $uss->userSessionIsActive();
 
-
-
-
-
-
 $layoutView->render($isLoggedIn, $loginView, $dateTimeView, $registerView);
 
 
