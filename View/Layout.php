@@ -20,7 +20,7 @@ class Layout {
 
     if ($this->shouldDisplayRegisterForm) {
         $correctForm = $regv->response();
-        $url = 'register';
+        $url = self::$registerURLID;
     } else {
       $this->linkText = self::$registerText;
       $this->navigationURL = self::$registerURLID;
@@ -35,7 +35,8 @@ class Layout {
         </head>
         <body>
           <h1>Assignment 2</h1>
-          <a href="?' . $this->navigationURL . '">'. $this->linkText .'</a>
+
+          ' . $this->renderLayoutLink($isLoggedIn) . '
           ' . $this->renderIsLoggedIn($isLoggedIn) . '
           
           <div class="container">
@@ -56,6 +57,14 @@ class Layout {
     $this->shouldDisplayRegisterForm = true;
     $this->linkText = self::$goBackText;
     $this->navigationURL = '';
+  }
+
+  private function renderLayoutLink(bool $isLoggedIn) {
+      if ($isLoggedIn) {
+        return '';
+      } else {
+        return '<a href="?' . $this->navigationURL . '">'. $this->linkText .'</a>';
+      }
   }
 
   
