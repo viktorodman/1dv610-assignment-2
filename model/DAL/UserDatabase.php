@@ -7,7 +7,7 @@ class UserDatabase {
     private static $rowUsername = "username";
     private static $rowPassword = "password";
     private static $userAlreadyExistsMessage = "User exists, pick another username.";
-    private static $wrongNameOrPasswordMessage = "User exists, pick another username.";
+    private static $wrongNameOrPasswordMessage = "Wrong name or password";
     private $connection;
 
     public function __construct(\mysqli $dbconnection) {

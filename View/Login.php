@@ -182,18 +182,7 @@ class Login {
 		';
 	}
 
-	private function getErrorMessage() {
-		if ($this->messageWasSetAndShouldNotBeRemovedDuringThisRequest) {
-            return $_SESSION[self::$messageSessionIndex];
-        }
-
-        if(isset($_SESSION[self::$messageSessionIndex])) {
-            $message = $_SESSION[self::$messageSessionIndex];
-            unset($_SESSION[self::$messageSessionIndex]);
-            return $message;
-        }
-        return "";
-	}
+	
 	
 	private function getRequestUsername() : \Model\Username {
 		if (empty($_POST[self::$name])) {
