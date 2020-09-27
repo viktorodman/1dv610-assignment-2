@@ -25,7 +25,7 @@ class CookieDatabase {
             
            return true;
         } else {
-            throw new \Exception($wrongInfoInCookiesMessage);
+            throw new \Exception(self::$wrongInfoInCookiesMessage);
         }
     }
 
@@ -73,8 +73,7 @@ class CookieDatabase {
 
         if ($cookieExpiredate[0] < time()) {
            
-            throw new \Exception(self::$wrongInfoInCookiesMessage
-        );
+            throw new \Exception(self::$wrongInfoInCookiesMessage);
         }
 
         return true;
