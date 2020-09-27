@@ -75,6 +75,23 @@ class Login {
 		header('Location: /');
 	}
 
+	public function reloadPageAndLoginWithCookie() {
+		$username;
+
+		$this->userSessionStorage->setSessionMessage(self::$loginCookieMessage);
+		if (isset($_POST[self::$name])) {
+			$username = $_POST[self::$name];
+		} else {
+			$username = $this->userCookieStorage->getCookieUsername();
+		}
+
+		$this->userSessionStorage->setSessionUser($username);
+
+		$this->userSessionStorage->setMessageToBeViewed();
+
+		header('Location: /');
+	}
+
 
 	public function reloadPageAndShowErrorMessage(string $errorMessage) {
 		$this->userSessionStorage->setSessionMessage($errorMessage);
@@ -120,24 +137,6 @@ class Login {
 
 	public function validateCookies() {
 		$this->userCookieStorage->validateUserCookies();
-	}
-
-
-	public function reloadPageAndLoginWithCookie() {
-		$username;
-
-		$this->userSessionStorage->setSessionMessage(self::$loginCookieMessage);
-		if (isset($_POST[self::$name])) {
-			$username = $_POST[self::$name];
-		} else {
-			$username = $this->userCookieStorage->getCookieUsername();
-		}
-
-		$this->userSessionStorage->setSessionUser($username);
-
-		$this->userSessionStorage->setMessageToBeViewed();
-
-		header('Location: /');
 	}
 
 	public function createUserCookie() {

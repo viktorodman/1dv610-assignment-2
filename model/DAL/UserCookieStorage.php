@@ -5,8 +5,7 @@ namespace Model\DAL;
 class UserCookieStorage {
     private static $cookieName = 'LoginView::CookieName';
 	private static $cookiePassword = 'LoginView::CookiePassword';
-    private static $secondsInAMonth = 3600 * 2;
-    /* private static $secondsInAMonth = 3600 * 24 * 30; */
+    private static $secondsInAMonth = 3600 * 24 * 30;
     private $cookieDB;
 
     public function __construct(\Model\DAL\CookieDatabase $cookieDB) {

@@ -26,6 +26,7 @@ class Login {
     public function doLogin() {
         try {
             if (!$this->loginView->userHasActiveSession()) {
+
                 if ($this->loginView->userWantsToLoginWithCookies()) {
                     $this->loginView->validateCookies();
                     $this->loginView->reloadPageAndLoginWithCookie();
